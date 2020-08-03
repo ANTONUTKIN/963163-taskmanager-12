@@ -33,7 +33,7 @@ const createSiteMenuTemplate = () => {
         >STATISTICS</label
       >
     </section>`
-    );
+  );
 };
 
 // Шаблон меню фильтров
@@ -98,7 +98,7 @@ const createFilterTemplate = () => {
         >Archive <span class="filter__archive-count">115</span></label
       >
     </section>`
-    );
+  );
 };
 
 // Шаблон доски заданий
