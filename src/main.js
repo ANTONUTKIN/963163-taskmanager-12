@@ -46,7 +46,7 @@ if (tasks.length > TASK_COUNT_PER_STEP) {
 
   loadMoreButton.addEventListener(`click`, (evt) => {
     evt.preventDefault();
-        tasks
+    tasks
       .slice(renderedTaskCount, renderedTaskCount + TASK_COUNT_PER_STEP)
       .forEach((task) => render(taskListElement, createTaskTemplate(task), `beforeend`));
 
