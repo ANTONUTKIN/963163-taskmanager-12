@@ -1,20 +1,5 @@
 import {COLORS} from "../const.js";
-
-const isExpired = (dueDate) => {
-  if (dueDate === null) {
-    return false;
-  }
-
-  const currentDate = new Date();
-
-  currentDate.setHours(23, 59, 59, 999);
-
-  return currentDate > dueDate.getTime();
-};
-
-const isRepeating = (repeating) => {
-  return Object.values(repeating).some(Boolean);
-};
+import {isTaskExpired, isTaskRepeating, humanizeTaskDueDate} from "../utils.js";
 
 const createTaskEditDateTemplate = (dueDate) => {
   return `<button class="card__date-deadline-toggle" type="button">
@@ -27,7 +12,7 @@ const createTaskEditDateTemplate = (dueDate) => {
           type="text"
           placeholder=""
           name="date"
-          value="${dueDate.toLocaleString(`en-US`, {day: `numeric`, month: `long`})}"
+          value="${humanizeTaskDueDate(dueDate)}"
         />
       </label>
     </fieldset>` : ``}
@@ -36,9 +21,9 @@ const createTaskEditDateTemplate = (dueDate) => {
 
 const createTaskEditRepeatingTemplate = (repeating) => {
   return `<button class="card__repeat-toggle" type="button">
-    repeat:<span class="card__repeat-status">${isRepeating(repeating) ? `yes` : `no`}</span>
+    repeat:<span class="card__repeat-status">${isTaskRepeating(repeating) ? `yes` : `no`}</span>
   </button>
-  ${isRepeating(repeating) ? `<fieldset class="card__repeat-days">
+  ${isTaskRepeating(repeating) ? `<fieldset class="card__repeat-days">
     <div class="card__repeat-days-inner">
       ${Object.entries(repeating).map(([day, repeat]) => `<input
         class="visually-hidden card__repeat-day-input"
@@ -56,8 +41,6 @@ const createTaskEditRepeatingTemplate = (repeating) => {
 };
 
 const createTaskEditColorsTemplate = (currentColor) => {
-  const colors = [`black`, `yellow`, `blue`, `green`, `pink`];
-
   return COLORS.map((color) => `<input
     type="radio"
     id="color-${color}"
@@ -89,56 +72,54 @@ export const createTaskEditTemplate = (task = {}) => {
     }
   } = task;
 
-  const deadlineClassName = isExpired(dueDate)
-  ? `card--deadline`
-  : ``;
+  const deadlineClassName = isTaskExpired(dueDate)
+    ? `card--deadline`
+    : ``;
   const dateTemplate = createTaskEditDateTemplate(dueDate);
 
-  const repeatingClassName = isRepeating(repeating)
-  ? `card--repeat`
-  : ``;
+  const repeatingClassName = isTaskRepeating(repeating)
+    ? `card--repeat`
+    : ``;
   const repeatingTemplate = createTaskEditRepeatingTemplate(repeating);
 
   const colorsTemplate = createTaskEditColorsTemplate(color);
 
-  return (
-    `<article class="card card--edit card--${color} ${deadlineClassName} ${repeatingClassName}">
-      <form class="card__form" method="get">
-        <div class="card__inner">
-          <div class="card__color-bar">
-            <svg class="card__color-bar-wave" width="100%" height="10">
-              <use xlink:href="#wave"></use>
-            </svg>
-          </div>
-          <div class="card__textarea-wrap">
-            <label>
-              <textarea
-                class="card__text"
-                placeholder="Start typing your text here..."
-                name="text"
-              >${description}</textarea>
-            </label>
-          </div>
-          <div class="card__settings">
-            <div class="card__details">
-              <div class="card__dates">
+  return `<article class="card card--edit card--${color} ${deadlineClassName} ${repeatingClassName}">
+    <form class="card__form" method="get">
+      <div class="card__inner">
+        <div class="card__color-bar">
+          <svg class="card__color-bar-wave" width="100%" height="10">
+            <use xlink:href="#wave"></use>
+          </svg>
+        </div>
+        <div class="card__textarea-wrap">
+          <label>
+            <textarea
+              class="card__text"
+              placeholder="Start typing your text here..."
+              name="text"
+            >${description}</textarea>
+          </label>
+        </div>
+        <div class="card__settings">
+          <div class="card__details">
+            <div class="card__dates">
               ${dateTemplate}
               ${repeatingTemplate}
-              </div>
-            </div>
-            <div class="card__colors-inner">
-              <h3 class="card__colors-title">Color</h3>
-              <div class="card__colors-wrap">
-              ${colorsTemplate}
-              </div>
             </div>
           </div>
-          <div class="card__status-btns">
-            <button class="card__save" type="submit">save</button>
-            <button class="card__delete" type="button">delete</button>
+          <div class="card__colors-inner">
+            <h3 class="card__colors-title">Color</h3>
+            <div class="card__colors-wrap">
+              ${colorsTemplate}
+            </div>
           </div>
         </div>
-      </form>
-    </article>`
-  );
+        <div class="card__status-btns">
+          <button class="card__save" type="submit">save</button>
+          <button class="card__delete" type="button">delete</button>
+        </div>
+      </div>
+    </form>
+  </article>`;
 };
