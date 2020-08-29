@@ -131,7 +131,7 @@ const createTaskEditTemplate = (task) => {
 
 export default class TaskEdit extends AbstractView {
   constructor(task) {
-    super()
+    super();
     this._task = task || BLANK_TASK;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
