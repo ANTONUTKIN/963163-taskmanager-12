@@ -99,7 +99,7 @@ export default class Board {
   }
 
   _clearTaskList() {
-    tObject
+    Object
       .values(this._taskPresenter)
       .forEach((presenter) => presenter.destroy());
     this._taskPresenter = {};
